@@ -1,13 +1,21 @@
 const { User } = require('../models');
 const validateUserInputs = require('./validations/validateUserInputs');
-const { findUser } = require('./login.service');
+const { findUserByEmail } = require('./login.service');
 const tokenFunctions = require('../utils/tokenFunctions');
+
+const findUserById = async (id) => {
+  const user = await User.findOne({
+    where: { id },
+    attributes: { exclude: ['password'] },
+  });
+  return user;
+};
 
 const createUser = async (userData) => {
   const error = validateUserInputs(userData);
   if (error) return { status: error.status, data: { message: error.message } };
 
-  const user = await findUser(userData.email);
+  const user = await findUserByEmail(userData.email);
   console.log(user);
   if (user) return { status: 'CONFLICT', data: { message: 'User already registered' } };
 
@@ -27,7 +35,15 @@ const getAllUsers = async () => {
   return { status: 'SUCCESSFUL', data: users };
 };
 
+const getUserById = async (id) => {
+  const user = await findUserById(id);
+  if (!user) return { status: 'NOT_FOUND', data: { message: 'User does not exist' } };
+
+  return { status: 'SUCCESSFUL', data: user };
+};
+
 module.exports = {
   createUser,
   getAllUsers,
+  getUserById,
 };

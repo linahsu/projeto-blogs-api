@@ -2,7 +2,7 @@ const { User } = require('../models');
 const validateLoginInputs = require('./validations/validateLoginInputs');
 const tokenFunctions = require('../utils/tokenFunctions');
 
-const findUser = async (email) => {
+const findUserByEmail = async (email) => {
   const user = await User.findOne({
     where: { email },
   });
@@ -15,7 +15,7 @@ const login = async (loginData) => {
 
   const { email, password } = loginData;
 
-  const user = await findUser(email);
+  const user = await findUserByEmail(email);
   if (!user || user.password !== password) {
     return { status: 'BAD_REQUEST', data: { message: 'Invalid fields' } };
   }
@@ -29,6 +29,6 @@ const login = async (loginData) => {
 };
 
 module.exports = {
-  findUser,
+  findUserByEmail,
   login,
 };
