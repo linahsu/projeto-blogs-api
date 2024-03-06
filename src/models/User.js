@@ -6,7 +6,7 @@ const UserModel = (sequelize, DataTypes) => {
       allowNull: false,
       primaryKey: true,
     },
-    display_name: {
+    displayName: {
       type: DataTypes.STRING(255),
     },
     email: {
@@ -18,6 +18,11 @@ const UserModel = (sequelize, DataTypes) => {
     image: {
       type: DataTypes.STRING(255),
     },
+  },
+  {
+    tableName: 'users',
+    underscored: true,
+    timestamps: false,
   });
   return User;
 };
