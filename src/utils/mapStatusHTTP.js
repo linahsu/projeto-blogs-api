@@ -5,6 +5,7 @@ const mapHttp = {
   CONFLICT: 409,
   INVALID_VALUE: 422,
   BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
 };
 
 module.exports = (status) => mapHttp[status] || 500;
