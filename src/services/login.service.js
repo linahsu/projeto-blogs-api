@@ -1,23 +1,12 @@
-const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const validateLoginInputs = require('./validations/validateLoginInputs');
-
-const secret = process.env.JWT_SECRET;
+const tokenFunctions = require('../utils/tokenFunctions');
 
 const findUser = async (email) => {
   const user = await User.findOne({
     where: { email },
   });
   return user;
-};
-
-const crateToken = (payload) => {
-  const jwtConfig = {
-    expiresIn: '1d',
-    algorithm: 'HS256',
-  };
-  const token = jwt.sign(payload, secret, jwtConfig);
-  return token;
 };
 
 const login = async (loginData) => {
@@ -34,11 +23,12 @@ const login = async (loginData) => {
   const payload = {
     userId: user.id,
   };
-  const token = crateToken(payload);
+  const token = tokenFunctions.createToken(payload);
 
   return { status: 'SUCCESSFUL', data: { token } };
 };
 
 module.exports = {
+  findUser,
   login,
 };
