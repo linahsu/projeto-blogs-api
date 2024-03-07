@@ -32,14 +32,14 @@ const createBlogPost = async (postData, userId) => {
   try {
     const newPost = await BlogPost.create({ title, content, userId }, { transaction: t });
 
-    Promise.all(await categoryIds.map((categoryId) => PostCategory
+    await Promise.all(await categoryIds.map((categoryId) => PostCategory
       .create({ postId: newPost.id, categoryId }, { transaction: t })));
 
     await t.commit();
     return { status: 'CREATED', data: newPost };
   } catch (e) {
     await t.rollback;
-    return { status: 'NOT_IMPLEMENTED', data: { message: e.message } };
+    return { status: 'BAD_REQUEST', data: { message: 'one or more "categoryIds" not found' } };
   }
 };
 
