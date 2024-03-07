@@ -17,9 +17,17 @@ const findCategories = async (categoryIds) => {
   return categories;
 };
 
-const insertPostCategory = async (userId, postData) => {
+const createBlogPost = async (postData, userId) => {
   const t = await sequelize.transaction();
   const { title, content, categoryIds } = postData;
+
+  const error = validatePostInputs(postData);
+  if (error) return { status: error.status, data: { message: error.message } };
+
+  const categories = await findCategories(categoryIds);
+  if (categories.includes(undefined)) {
+    return { status: 'BAD_REQUEST', data: { message: 'one or more "categoryIds" not found' } };
+  }
 
   try {
     const newPost = await BlogPost.create({ title, content, userId }, { transaction: t });
@@ -28,25 +36,11 @@ const insertPostCategory = async (userId, postData) => {
       .create({ postId: newPost.id, categoryId }, { transaction: t })));
 
     await t.commit();
-    return newPost;
+    return { status: 'CREATED', data: newPost };
   } catch (e) {
     await t.rollback;
-    return { message: e.message };
+    return { status: 'NOT_IMPLEMENTED', data: { message: e.message } };
   }
-};
-
-const createBlogPost = async (postData, userId) => {
-  const error = validatePostInputs(postData);
-  if (error) return { status: error.status, data: { message: error.message } };
-
-  const categories = await findCategories(postData.categoryIds);
-  if (categories.includes(undefined)) {
-    return { status: 'BAD_REQUEST', data: { message: 'one or more "categoryIds" not found' } };
-  }
-
-  const newPost = insertPostCategory(userId, postData);
-  if (newPost.message) return { status: 'NOT_IMPLEMENTED', data: newPost };
-  return { status: 'CREATED', data: newPost };
 };
 
 module.exports = {
