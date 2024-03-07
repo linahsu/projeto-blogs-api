@@ -1,10 +1,10 @@
-const { createPostService, otherPostService } = require('../services');
+const { createAndDeletePost, otherPostService } = require('../services');
 const mapStatusHTTP = require('../utils/mapStatusHTTP');
 
 const createBlogPost = async (req, res) => {
   const postData = req.body;
   const { userId } = req.locals;
-  const serviceResponse = await createPostService.createBlogPost(postData, userId);
+  const serviceResponse = await createAndDeletePost.createBlogPost(postData, userId);
   return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
 };
 
@@ -16,7 +16,10 @@ const getAllBlogPosts = async (_req, res) => {
 const getBlogPostById = async (req, res) => {
   const { id } = req.params;
   const serviceResponse = await otherPostService.getBlogPostById(id);
-  return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
+  if (serviceResponse.status !== 'NO_CONTENT') {
+    return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
+  }
+  return res.status(mapStatusHTTP(serviceResponse.status)).end();
 };
 
 const updateBlogPost = async (req, res) => {
@@ -27,9 +30,17 @@ const updateBlogPost = async (req, res) => {
   return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
 };
 
+const deleteBlogPost = async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.locals;
+  const serviceResponse = await createAndDeletePost.deleteBlogPost(id, userId);
+  return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
+};
+
 module.exports = {
   createBlogPost,
   getAllBlogPosts,
   getBlogPostById,
   updateBlogPost,
+  deleteBlogPost,
 };

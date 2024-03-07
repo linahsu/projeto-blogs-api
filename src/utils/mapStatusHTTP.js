@@ -7,6 +7,7 @@ const mapHttp = {
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   NOT_IMPLEMENTED: 501,
+  NO_CONTENT: 204,
 };
 
 module.exports = (status) => mapHttp[status] || 500;

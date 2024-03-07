@@ -8,12 +8,9 @@ const sequelize = new Sequelize(config[env]);
 
 const findCategories = async (categoryIds) => {
   const categories = Promise.all(await categoryIds.map((id) => {
-    const categoryFound = Category.findOne({
-      where: { id },
-    });
+    const categoryFound = Category.findOne({ where: { id } });
     return categoryFound;
   }));
-
   return categories;
 };
 
@@ -43,6 +40,18 @@ const createBlogPost = async (postData, userId) => {
   }
 };
 
+const deleteBlogPost = async (id, userId) => {
+  const post = await BlogPost.findOne({ where: { id } });
+  if (!post) return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
+  if (post.userId !== userId) {
+    return { status: 'UNAUTHORIZED', data: { message: 'Unauthorized user' } };
+  }
+  
+  await BlogPost.destroy({ where: { id } });
+  return { status: 'NO_CONTENT', data: null };
+};
+
 module.exports = {
   createBlogPost,
+  deleteBlogPost,
 };
