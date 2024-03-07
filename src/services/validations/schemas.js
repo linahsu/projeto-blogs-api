@@ -4,15 +4,9 @@ const errorMessage = 'Some required fields are missing';
 
 const loginSchema = Joi.object({
   email: Joi.string().required()
-    .messages({
-      'string.empty': errorMessage,
-      'string.required': errorMessage,
-    }),
+    .messages({ 'string.empty': errorMessage, 'string.required': errorMessage }),
   password: Joi.string().required()
-    .messages({
-      'string.empty': errorMessage,
-      'string.required': errorMessage,
-    }),
+    .messages({ 'string.empty': errorMessage, 'string.required': errorMessage }),
 });
 
 const userSchema = Joi.object({
@@ -28,20 +22,18 @@ const categorySchema = Joi.object({
 
 const postSchema = Joi.object({
   title: Joi.string().min(1).required()
-    .messages({
-      'string.empty': errorMessage,
-      'string.required': errorMessage,
-    }),
+    .messages({ 'string.empty': errorMessage, 'string.required': errorMessage }),
   content: Joi.string().min(1).required()
-    .messages({
-      'string.empty': errorMessage,
-      'string.required': errorMessage,
-    }),
+    .messages({ 'string.empty': errorMessage, 'string.required': errorMessage }),
   categoryIds: Joi.array().required()
-    .messages({
-      'string.empty': errorMessage,
-      'string.required': errorMessage,
-    }),
+    .messages({ 'string.empty': errorMessage, 'string.required': errorMessage }),
+});
+
+const updatePostSchema = Joi.object({
+  title: Joi.string().min(1).required()
+    .messages({ 'string.empty': errorMessage, 'string.required': errorMessage }),
+  content: Joi.string().min(1).required()
+    .messages({ 'string.empty': errorMessage, 'string.required': errorMessage }),
 });
 
 module.exports = {
@@ -49,4 +41,5 @@ module.exports = {
   userSchema,
   categorySchema,
   postSchema,
+  updatePostSchema,
 };

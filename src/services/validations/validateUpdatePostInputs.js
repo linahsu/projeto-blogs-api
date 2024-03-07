@@ -1,6 +1,6 @@
 const schema = require('./schemas');
 
-module.exports = (updatePostData) => {
-  const { error } = schema.postSchema.validate(updatePostData);
+module.exports = (postData) => {
+  const { error } = schema.updatePostSchema.validate(postData);
   if (error) return { status: 'BAD_REQUEST', message: error.message };
 };
