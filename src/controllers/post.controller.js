@@ -8,6 +8,12 @@ const createBlogPost = async (req, res) => {
   return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
 };
 
+const getAllBlogPosts = async (_req, res) => {
+  const serviceResponse = await postService.getAllBlogPosts();
+  return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
+};
+
 module.exports = {
   createBlogPost,
+  getAllBlogPosts,
 };
