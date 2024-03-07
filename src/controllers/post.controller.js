@@ -13,6 +13,12 @@ const getAllBlogPosts = async (_req, res) => {
   return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
 };
 
+const getBlogPostByQuery = async (req, res) => {
+  const { q } = req.query;
+  const serviceResponse = await otherPostService.getBlogPostByQuery(q);
+  return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
+};
+
 const getBlogPostById = async (req, res) => {
   const { id } = req.params;
   const serviceResponse = await otherPostService.getBlogPostById(id);
@@ -40,6 +46,7 @@ const deleteBlogPost = async (req, res) => {
 module.exports = {
   createBlogPost,
   getAllBlogPosts,
+  getBlogPostByQuery,
   getBlogPostById,
   updateBlogPost,
   deleteBlogPost,

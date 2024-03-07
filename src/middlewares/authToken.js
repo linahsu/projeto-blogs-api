@@ -8,9 +8,8 @@ module.exports = (req, res, next) => {
   try {
     const payload = tokenFunctions.verifyToken(token);
     req.locals = payload;
+    next();
   } catch (error) {
     return res.status(401).json({ message: 'Expired or invalid token' });
   }
-
-  next();
 };

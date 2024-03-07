@@ -15,7 +15,6 @@ const findCategories = async (categoryIds) => {
 };
 
 const createBlogPost = async (postData, userId) => {
-  const t = await sequelize.transaction();
   const { title, content, categoryIds } = postData;
 
   const error = validatePostInputs(postData);
@@ -26,16 +25,17 @@ const createBlogPost = async (postData, userId) => {
     return { status: 'BAD_REQUEST', data: { message: 'one or more "categoryIds" not found' } };
   }
 
+  const t = await sequelize.transaction();
   try {
     const newPost = await BlogPost.create({ title, content, userId }, { transaction: t });
 
-    await Promise.all(await categoryIds.map((categoryId) => PostCategory
+    await Promise.all(categoryIds.map((categoryId) => PostCategory
       .create({ postId: newPost.id, categoryId }, { transaction: t })));
 
     await t.commit();
     return { status: 'CREATED', data: newPost };
   } catch (e) {
-    await t.rollback;
+    await t.rollback();
     return { status: 'BAD_REQUEST', data: { message: 'one or more "categoryIds" not found' } };
   }
 };

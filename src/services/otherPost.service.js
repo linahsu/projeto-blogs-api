@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { BlogPost, Category, User } = require('../models');
 const validateUpdatePostInputs = require('./validations/validateUpdatePostInputs');
 
@@ -20,6 +21,13 @@ const getAllBlogPosts = async () => {
     ],
   });
   return { status: 'SUCCESSFUL', data: posts };
+};
+
+const getBlogPostByQuery = async (q) => {
+  const posts = await BlogPost.findAll({ 
+    where: { title: { [Op.like]: `%${q}%` }, content: { [Op.like]: `%${q}%` } },
+  });
+  return { status: 'SUCCESS', data: posts };
 };
 
 const getBlogPostById = async (id) => {
@@ -46,6 +54,7 @@ const updateBlogPost = async (id, userId, updatePostData) => {
 
 module.exports = {
   getAllBlogPosts,
+  getBlogPostByQuery,
   getBlogPostById,
   updateBlogPost,
 };
