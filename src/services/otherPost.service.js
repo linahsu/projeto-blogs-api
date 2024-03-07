@@ -9,7 +9,6 @@ const findBlogPost = async (id) => {
       { model: Category, as: 'categories', through: { attributes: [] } },
     ],
   });
-
   return post;
 };
 
@@ -26,7 +25,6 @@ const getAllBlogPosts = async () => {
 const getBlogPostById = async (id) => {
   const post = await findBlogPost(id);
   if (!post) return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
-
   return { status: 'SUCCESSFUL', data: post };
 };
 
@@ -43,7 +41,6 @@ const updateBlogPost = async (id, userId, updatePostData) => {
 
   await BlogPost.update(updatePostData, { where: { id } });
   const updatedPost = await findBlogPost(id);
-
   return { status: 'SUCCESSFUL', data: updatedPost };
 };
 
