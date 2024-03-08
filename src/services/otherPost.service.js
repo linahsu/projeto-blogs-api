@@ -7,8 +7,7 @@ const findBlogPost = async (id) => {
     where: { id },
     include: [
       { model: User, as: 'user', attributes: { exclude: 'password' } },
-      { model: Category, as: 'categories', through: { attributes: [] } },
-    ],
+      { model: Category, as: 'categories', through: { attributes: [] } }],
   });
   return post;
 };
@@ -17,17 +16,19 @@ const getAllBlogPosts = async () => {
   const posts = await BlogPost.findAll({
     include: [
       { model: User, as: 'user', attributes: { exclude: 'password' } },
-      { model: Category, as: 'categories', through: { attributes: [] } },
-    ],
+      { model: Category, as: 'categories', through: { attributes: [] } }],
   });
   return { status: 'SUCCESSFUL', data: posts };
 };
 
 const getBlogPostByQuery = async (q) => {
-  const posts = await BlogPost.findAll({ 
-    where: { title: { [Op.like]: `%${q}%` }, content: { [Op.like]: `%${q}%` } },
+  const posts = await BlogPost.findAll({
+    where: { [Op.or]: { title: { [Op.like]: `%${q}%` }, content: { [Op.like]: `%${q}%` } } },
+    include: [
+      { model: User, as: 'user', attributes: { exclude: 'password' } },
+      { model: Category, as: 'categories', through: { attributes: [] } }],
   });
-  return { status: 'SUCCESS', data: posts };
+  return { status: 'SUCCESSFUL', data: posts };
 };
 
 const getBlogPostById = async (id) => {
@@ -42,7 +43,6 @@ const updateBlogPost = async (id, userId, updatePostData) => {
 
   const post = await findBlogPost(id);
   if (!post) return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
-
   if (post.userId !== userId) {
     return { status: 'UNAUTHORIZED', data: { message: 'Unauthorized user' } };
   }

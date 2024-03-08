@@ -16,7 +16,6 @@ const createUser = async (userData) => {
   if (error) return { status: error.status, data: { message: error.message } };
 
   const user = await findUserByEmail(userData.email);
-  console.log(user);
   if (user) return { status: 'CONFLICT', data: { message: 'User already registered' } };
 
   const newUser = await User.create(userData);
@@ -31,7 +30,6 @@ const getAllUsers = async () => {
   const users = await User.findAll({
     attributes: { exclude: ['password'] },
   });
-  console.log(users);
   return { status: 'SUCCESSFUL', data: users };
 };
 
